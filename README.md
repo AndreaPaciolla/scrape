@@ -1,2 +1,2 @@
 # scrape
-Web scraping for SMM
+Web scraping for 500px SMM purposes.
