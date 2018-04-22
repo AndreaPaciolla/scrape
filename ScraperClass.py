@@ -12,7 +12,7 @@ class Scraper(object):
         'profile': 'https://500px.com/andreapaciolla',
         'users': 'https://api.500px.com/v1/users/top',
         'followers': 'https://api.500px.com/v1/users/*placeholder*/followers',
-        'user': 'https://api.500px.com/v1/photos?feature=user',
+        'user': 'https://api.500px.com/v1/photos?feature=user&stream=photos&page=1&rpp=5&user_id=',
         'discoveryPics': 'https://webapi.500px.com/discovery/foryou?include_personalized_content=true'
     }
 
@@ -82,7 +82,7 @@ class Scraper(object):
         if userDiscovery.status_code == 200:
             # Retrieve all the users
             page = 1
-            perPage = 50
+            perPage = 1
             returning = []
             pages = math.ceil( int(userDiscovery.json().get('total_users')) / perPage )
 
@@ -103,7 +103,7 @@ class Scraper(object):
             return False
 
     def getUserById(self, id): 
-        apiURL = self['pages']['user'] + '&stream=photos&user_id=' + str(id)
+        apiURL = self['pages']['user'] + str(id)
 
         self.siteSession.headers.update({'Origin': 'https://500px.com'})
         self.siteSession.headers.update({'Host': 'api.500px.com'})
