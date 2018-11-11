@@ -1,6 +1,7 @@
 import requests 
 import json
 import math
+import time
 import UtilityClass
 from bs4 import BeautifulSoup
 
@@ -28,6 +29,12 @@ class Scraper(object):
     def doLogin(self):
         try:
             print('-> Attempting login...')
+
+            self.siteSession.headers.update({'Origin': 'https://500px.com'})
+            self.siteSession.headers.update({'Host': 'api.500px.com'})
+            self.siteSession.headers.update({'X-CSRF-Token': 'siu+B2gEwPxM4ZOwmqY9iSmDIWu/aHFrnrmFQM8qvJ3IE/C1/vuRRxPtVfnpi5dRVgI1/Z0g2MBqCgyAcCC2LQ=='})
+            self.siteSession.headers.update({'Cookie': 'device_uuid=1ecb2213-61aa-4521-aa8a-5e4bdeb6f2e4; localized_ui_banner_1062343=1; locale=en; _srt=BAhJIhYyNjQyMTcyNTovWm5OVXc9PQY6BkVU--d5c3be5b75153283daaed3943f8be274652b34b5; _hpx1=BAh7DUkiD3Nlc3Npb25faWQGOgZFVEkiJWYyMDQ4MzhkNDFlZTI5YjA2NzgyOWZlMmVlZWI3NTYyBjsAVEkiCmZsYXNoBjsAVHsHSSIMZGlzY2FyZAY7AFRbBkkiDG1lc3NhZ2UGOwBGSSIMZmxhc2hlcwY7AFR7BkkiDG1lc3NhZ2UGOwBGSSIYWW91IGhhdmUgbG9nZ2VkIG91dAY7AFRJIglob3N0BjsARiIONTAwcHguY29tSSIZdXNlX29uYm9hcmRpbmdfbW9kYWwGOwBGVEkiGHN1cGVyX3NlY3JldF9waXgzbHMGOwBGRkkiEF9jc3JmX3Rva2VuBjsARkkiMWVqaE9zcGIvVWJ0ZkRNWkpjeTJxMkgrQkZKWWlTS21yOUxPSndMOEtDckE9BjsARkkiG3ByZXZpb3VzX3BhZ2VfcmVjb3JkZWQGOwBGVEkiHHJlZGlyZWN0aW9uX2FmdGVyX2xvZ2luBjsARiIXaHR0cHM6Ly81MDBweC5jb20v--9e85c4239ae948c6d551cf852949ed5331a763b5'})
+
             response_login_request = self.siteSession.post(
                 self['pages']['login'],
                 data=self.loginPayload,
@@ -39,6 +46,9 @@ class Scraper(object):
             # Prepare another request to get the homepage and check if we've logged in correctly
             print('-> Retrieving /profile page... ')
 
+
+            self.siteSession.headers.update({'Origin': 'https://500px.com'})
+            self.siteSession.headers.update({'Host': '500px.com'})
             responseObjHomeURL = self.siteSession.get(self['pages']['profile'])
 
             if responseObjHomeURL.text.find(self.loginSuccessAttr) > 0:
@@ -77,18 +87,20 @@ class Scraper(object):
         
         # Start with a discovery api in order to know how much users are present
         # and then start with all the requests...
-        userDiscovery = self.siteSession.get(apiURL + '?page=1&rpp=10')
-        print("Invoking discovery... {}".format(apiURL + '?page=1&rpp=10'))
+        userDiscovery = self.siteSession.get(apiURL + '?page=1&rpp=1')
+        print("Invoking discovery... {}".format(apiURL + '?page=1&rpp=1'))
         if userDiscovery.status_code == 200:
             # Retrieve all the users
             page = 1
-            perPage = 1
+            perPage = 10
             returning = []
             pages = math.ceil( int(userDiscovery.json().get('total_users')) / perPage )
 
             print("Getting all the users in {} pages...".format(pages))
             while pages >= page and usersLimit >= page*perPage:
                 apiURL = self['pages']['users'] + '?page=' + str(page) + '&rpp=' + str(perPage)
+                print( 'Waiting before calling page {}' . format( page ) )
+                #time.sleep( 100 )
                 print("Invoking... {}".format(apiURL))
                 users = self.siteSession.get(apiURL)
                 if users.status_code == 200:
@@ -112,12 +124,15 @@ class Scraper(object):
         
         user = self.siteSession.get(apiURL)
         if user.status_code == 200:
-            return user.json().get('photos')[0].get('user')
+            try:
+                return user.json().get('photos')[0].get('user')
+            except:
+                return {}
         else:
             print('ScraperClass :: getUser method :: {}'.format( user ))    
             return False
 
-    def getUserFollowersByUserId(self, userId, followersLimit=100): 
+    def getUserFollowersByUserId(self, userId, followersLimit=100):
         page = 1
         perPage = 50
         apiURL = self['pages']['followers']
@@ -140,6 +155,8 @@ class Scraper(object):
             # Make sure to get only the followers we would like to have (i.e. consider the followersLimit)
             while totalPages >= page and followersLimit >= perPage*page:
                 apiURL = (self['pages']['followers']).replace('*placeholder*', str(userId) ) + '?page=' + str(page) + '&rpp=' + str(perPage) 
+                print( 'Waiting before calling page {}' . format( page ) )
+
                 print( 'invoking... {}' . format( apiURL ) )
                 followers = self.siteSession.get(apiURL)
                 if followers.status_code == 200:
