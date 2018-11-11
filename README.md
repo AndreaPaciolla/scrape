@@ -1,5 +1,8 @@
 # scrape
-Network analisys for 500px.
+Network analisys for 500px website.
+
+# Disclaimer
+All the analysis, docs and analysis' results are in Italian. Sorry :(
 
 # Todo for the project
 

@@ -1,0 +1,24 @@
+Network edges 47000 with 27495 nodes.
+Network info {
+	'average_degree': 3.4188034188034186, 
+	'min_degree': 0, 
+	'max_degree': 502, 
+	'median': 1.0, 
+	'mode': 1, 
+	'transitivity': 5.1166162111456955e-06, 
+	'reciprocity': 0.0, 
+	'natural_cutoff_erdos': 10.221759448941915, 
+	'natural_cutoff_complete': 27494, 
+	'assortativity': 2.2738442001389263e-08
+}
+
+Hub Sean Archer (777395)
+Hub Mark Bridger (99604)
+Hub Paul Zizka (75551)
+Hub Alessandro Di Cicco (11998975)
+Hub Sandi Bertoncelj (24527)
+Hub Oscar Nilsson (15196945)
+Hub Lee Jeffries (105223)
+Hub Juan Pablo de Miguel (225463)
+Hub Roeselien Raimond (90818)
+Hub Maxim  Guselnikov (14213)
