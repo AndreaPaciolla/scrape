@@ -3,6 +3,7 @@ Network analisys for 500px website.
 
 # Disclaimer
 All the analysis, docs and analysis' results are in Italian. Sorry :(
+Here you can find the .pdf file which shows and describes all the analysis' results.
 
 # Todo for the project
 

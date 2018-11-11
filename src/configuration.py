@@ -1,1 +1,1 @@
-GOOGLE_GEOCODER_API_KEY = 'AIzaSyD9uPgCh1emxvZw6K0KtI6elOBL5H8Dn9s'
+GOOGLE_GEOCODER_API_KEY = '<your_google_api_key>'
